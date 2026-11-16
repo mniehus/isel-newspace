@@ -1,0 +1,8 @@
+---
+import View from '../../views/NewsArticle.astro';
+import {getCollection} from 'astro:content';
+
+export async function getStaticPaths(){return (await getCollection('news')).map(x=>({params:{id:x.id},props:{entry:x}}));}
+const {entry}=Astro.props;
+---
+<View lang="pt" entry={entry}/>

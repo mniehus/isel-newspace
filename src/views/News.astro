@@ -1,0 +1,4 @@
+---
+import Base from '../layouts/Base.astro';import {getCollection} from 'astro:content';import {sortNews} from '../lib/content';import {ui,path,formatDate,type Lang} from '../lib/i18n';const {lang='pt'}=Astro.props as {lang?:Lang};const t=ui[lang];const news=(await getCollection('news')).sort(sortNews);
+---
+<Base lang={lang} title={t.newsTitle}><section class="subhero"><div class="wrap"><div class="eyebrow">{t.newsEyebrow}</div><h1>{t.newsTitle}</h1><p>{t.newsIntro}</p></div></section><section class="section wrap"><div class="newslist">{news.map(n=><a class="newsitem" href={path(lang,`news/${n.id}/`)}><span class="tagline">{formatDate(n.data.date,lang)}</span><h3>{n.data.title}</h3><p>{n.data.summary}</p><span class="text-link">{t.more} ↗</span></a>)}</div></section></Base>

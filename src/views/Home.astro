@@ -1,0 +1,18 @@
+---
+import Base from '../layouts/Base.astro';
+import {getCollection} from 'astro:content';import {groupSlug,sortEvents,sortNews} from '../lib/content';
+import {ui,path,formatDate,scopeText,type Lang} from '../lib/i18n';
+const {lang='pt'}=Astro.props as {lang?:Lang}; const t=ui[lang];
+const areas=(await getCollection('areas')).sort((a,b)=>a.data.order-b.data.order);
+const events=(await getCollection('events')).filter(e=>e.data.date>=new Date(new Date().toISOString().slice(0,10))).sort(sortEvents).slice(0,3);
+const news=(await getCollection('news')).sort(sortNews).slice(0,2);
+---
+<Base lang={lang} title={t.tag} description={t.line}>
+<section class="hero technical-hero" aria-labelledby="hero-title"><div class="hero-left-shade" aria-hidden="true"></div>
+  <div class="wrap hero-content"><div class="eyebrow hero-kicker"><span class="status-dot"></span> {t.kicker}</div><h1 id="hero-title">{lang==='pt'?<>Exploramos<br/><span>o espaço.</span><br/>Juntos.</>:<>Exploring<br/><span>space.</span><br/>Together.</>}</h1><p class="hero-statement">{t.line}</p><p class="hero-description">{t.heroBody}</p><div class="actions"><a class="btn" href={path(lang,'explore/')}>{t.explore} <span aria-hidden="true">↗</span></a><a class="btn secondary" href={path(lang,'events/')}>{t.events}</a></div><div class="hero-meta">38°45′N / 9°07′W <span class="hero-meta-line"></span> LISBON · SPACE ACTIVITIES</div></div>
+  <div class="hero-bottom"><span>ROCKETRY / CUBESAT / RF / OPTICAL / QUANTUM / EO / MICROGRAVITY / ASTRONOMY</span><span>ISEL NEWSPACE · 001</span></div></section>
+<section class="section wrap"><div class="section-header"><div><div class="eyebrow">{t.eyebrow}</div><h2>{t.one}</h2><p>{t.oneBody}</p></div><a class="text-link" href={path(lang,'explore/')}>{t.all} ↗</a></div><div class="grid">{areas.map(a=><a class="card" href={path(lang,`areas/${a.id}/`)}><div class="card-placeholder"><span>ISEL / NEWSPACE</span><span class="placeholder-hint">{lang==='pt'?'ÁREA':'AREA'}</span></div><div class="card-text"><h3>{lang==='en'?(a.data.titleEn||a.data.title):a.data.title}</h3><p>{a.data.summary}</p><span class="tagline">{lang==='pt'?'Explorar':'Explore'} ↗</span></div></a>)}</div></section>
+<section class="section dark-panel"><div class="wrap split-feature"><div><div class="eyebrow">{t.feature}</div><h2>{t.featureTitle}</h2><p>{t.featureBody}</p><a class="text-link" href={path(lang,'community/')}>{t.join} ↗</a></div><div class="tech-quote" aria-hidden="true"><span>GROUND SEGMENT</span><strong>SPACE ↔ EARTH</strong><span>OPEN SYSTEMS / REAL ENGINEERING</span><div class="signal-bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div></div></section>
+<section class="section wrap"><div class="section-header"><div><div class="eyebrow">{t.happening}</div><h2>{t.upcoming}</h2><p>{t.upcomingBody}</p></div><a class="text-link" href={path(lang,'events/')}>{t.full} ↗</a></div>{events.length?events.map(e=><div class="event-row"><div class="datebox">{formatDate(e.data.date,lang)}</div><div><span class="pill">{scopeText(e.data.scope,lang)}</span><h3>{e.data.title}</h3><p>{e.data.summary} · {e.data.location}</p></div></div>):<p class="muted">{t.empty}</p>}</section>
+<section class="section wrap section-tight"><div class="section-header"><div><div class="eyebrow">{t.updates}</div><h2>{t.latest}</h2></div><a class="text-link" href={path(lang,'news/')}>{t.allNews} ↗</a></div><div class="newslist">{news.map(n=><a class="newsitem" href={path(lang,`news/${n.id}/`)}><span class="tagline">{formatDate(n.data.date,lang)}</span><h3>{n.data.title}</h3><p>{n.data.summary}</p><span class="text-link">{t.more} ↗</span></a>)}</div></section>
+</Base>

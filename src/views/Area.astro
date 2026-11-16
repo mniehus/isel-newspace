@@ -1,0 +1,12 @@
+---
+import Base from '../layouts/Base.astro';import {getCollection,render} from 'astro:content';
+import {path,type Lang} from '../lib/i18n';import {groupSlug} from '../lib/content';
+const {area,lang='pt'}=Astro.props as {area:any;lang:Lang};
+const {Content}=await render(area);const all=await getCollection('projects');const teams=await getCollection('teams');
+const projects=all.filter(p=>p.data.areas.includes(area.id));
+const related=teams.filter(t=>projects.some(p=>p.data.teams.includes(groupSlug(t))));
+---
+<Base lang={lang} title={lang==='en'?(area.data.titleEn||area.data.title):area.data.title}>
+<section class="subhero"><div class="wrap"><div class="eyebrow">ISEL NEWSPACE / {lang==='pt'?'ÁREA':'AREA'}</div><h1>{lang==='en'?(area.data.titleEn||area.data.title):area.data.title}</h1><p>{lang==='en'?(area.data.summaryEn||area.data.summary):area.data.summary}</p></div></section>
+<div class="wrap"><article class="article"><Content/><h2>{lang==='pt'?'Projetos relacionados':'Related projects'}</h2>{projects.length?projects.map(p=><p><a href={path(lang,`projects/${p.id}/`)}>{p.data.title} ↗</a> — {p.data.summary}</p>):<p>{lang==='pt'?'Ainda não existem projetos associados.':'No linked projects yet.'}</p>}<h2>{lang==='pt'?'Equipas participantes':'Participating teams'}</h2>{related.length?related.map(t=><p><a href={path(lang,`teams/${groupSlug(t)}/`)}>{t.data.title} ↗</a></p>):<p>—</p>}</article></div>
+</Base>

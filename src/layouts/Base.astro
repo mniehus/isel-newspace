@@ -1,0 +1,15 @@
+---
+import '../styles/global.css';
+import Starfield from '../components/Starfield.astro';
+import {ui,path,type Lang} from '../lib/i18n';
+const {title='ISEL NewSpace',description='Comunidade espacial do ISEL',lang='pt'}=Astro.props as {title?:string;description?:string;lang?:Lang};
+const t=ui[lang],root=import.meta.env.BASE_URL;
+const segments=Astro.url.pathname.replace(root,'').replace(/^en\//,'');
+const other:Lang=lang==='pt'?'en':'pt';
+---
+<!doctype html>
+<html lang={lang}><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><meta name="description" content={description}/><title>{title} | ISEL NewSpace</title><link rel="icon" href={`${root}favicon.svg`} type="image/svg+xml"/><meta name="theme-color" content="#071423"/></head>
+<body><Starfield/><div class="cosmic-overlay" aria-hidden="true"></div><header class="topbar"><div class="topbar-inner"><a class="brand" href={path(lang)} aria-label="ISEL NewSpace"><span class="brand-badge"><img src={`${root}assets/isel-newspace-badge-simplified.svg`} alt=""/></span><span class="brand-word"><img class="isel-official" src={`${root}assets/isel-oficial-branco.png`} alt="ISEL"/><strong>New<span>Space</span></strong></span></a><nav aria-label={lang==='pt'?'Navegação principal':'Main navigation'}>{['','explore/','projects/','community/','showroom/','events/','news/','contact/'].map((route,i)=><a href={path(lang,route)} aria-current={segments===route?'page':undefined}>{t.nav[i]}</a>)}</nav><div class="language-switch" aria-label="Language"><a class={lang==='pt'?'selected':''} lang="pt" href={path('pt',segments)}>PT</a><span>/</span><a class={lang==='en'?'selected':''} lang="en" href={path('en',segments)}>EN</a></div></div></header>
+<main><slot/></main>
+<footer><div class="footer-inner wrap"><div><b>ISEL <span class="highlight">NewSpace</span></b><p>{t.footer}</p><p class="tiny">{t.prototype}</p></div><div class="footer-links"><a href={path(lang,'explore/')}>{t.nav[1]}</a><a href={path(lang,'projects/')}>{t.nav[2]}</a><a href={path(lang,'community/')}>{t.nav[3]}</a><a href={path(lang,'contact/')}>{t.nav[7]}</a><a href="https://www.isel.pt/" target="_blank" rel="noopener">ISEL ↗</a></div></div></footer>
+</body></html>

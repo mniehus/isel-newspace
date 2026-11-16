@@ -1,0 +1,6 @@
+---
+import View from '../../views/Area.astro';import {getCollection} from 'astro:content';
+export async function getStaticPaths(){return (await getCollection('areas')).map(a=>({params:{slug:a.id},props:{area:a}}));}
+const {area}=Astro.props;
+---
+<View lang="pt" area={area}/>

@@ -1,0 +1,9 @@
+---
+import Base from '../layouts/Base.astro';import {getCollection,render} from 'astro:content';import {groupSlug} from '../lib/content';
+import {ui,path,formatDate,type Lang} from '../lib/i18n';
+const {lang='pt',group}=Astro.props;const t=ui[lang as Lang];const slug=groupSlug(group);const {Content}=await render(group);
+const projects=(await getCollection('projects')).filter(p=>p.data.teams.includes(slug));
+const events=(await getCollection('events')).filter(e=>e.id.startsWith(`groups/${slug}/`)||e.data.teams.includes(slug)).sort((a,b)=>a.data.date.getTime()-b.data.date.getTime());
+const news=(await getCollection('news')).filter(n=>n.id.startsWith(`groups/${slug}/`)||n.data.teams.includes(slug));
+---
+<Base lang={lang} title={group.data.title}><section class="subhero"><div class="wrap"><div class="eyebrow">{t.communityEyebrow} / ISEL NEWSPACE</div><h1>{group.data.title}</h1><p>{group.data.short}</p></div></section><div class="wrap"><article class="article"><div class="tagline">{t.about}</div>{group.data.demo&&<p class="pill">{lang==='pt'?'Perfil demonstrativo — equipa a confirmar':'Demonstration profile — team to be confirmed'}</p>}<Content/>{group.data.website&&<p><a href={group.data.website} target="_blank" rel="noopener">{t.groupWeb} ↗</a></p>}{group.data.contact&&<p><a href={`mailto:${group.data.contact}`}>{group.data.contact}</a></p>}<h2>{t.projects}</h2>{projects.length?projects.map(p=><div class="event-row"><div><h3><a href={path(lang,`projects/${p.id}/`)}>{p.data.title} ↗</a></h3><p>{p.data.summary}</p></div></div>):<p>{t.noProjects}</p>}<h2>{t.groupEvents}</h2>{events.length?events.map(e=><div class="event-row"><div class="datebox">{formatDate(e.data.date,lang)}</div><div><h3>{e.data.title}</h3><p>{e.data.summary}</p></div></div>):<p>{t.noEvents}</p>}<h2>{t.nav[6]}</h2>{news.length?news.map(n=><p><a href={path(lang,`news/${n.id}/`)}>{n.data.title} ↗</a></p>):<p>{t.noNews}</p>}</article></div></Base>

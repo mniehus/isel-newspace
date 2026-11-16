@@ -1,0 +1,10 @@
+---
+import {path,type Lang} from '../lib/i18n';
+const {title,short,slug,image,lang='pt'}=Astro.props as {title:string;short:string;slug:string;image?:string;lang?:Lang};
+const root=import.meta.env.BASE_URL;
+const safeImage=image?.startsWith('/')?`${root}${image.slice(1)}`:image;
+---
+<a href={path(lang,`groups/${slug}/`)} class="card card--group">
+  {safeImage?<div class="card-media"><img loading="lazy" src={safeImage} alt=""/></div>:<div class="card-placeholder" aria-hidden="true"><span>ISEL / NEWSPACE</span><span class="placeholder-hint">{lang==='pt'?'ÁREA DE ATIVIDADE':'ACTIVITY AREA'}</span></div>}
+  <div class="card-text"><h3>{title}</h3><p>{short}</p><span class="tagline">{lang==='pt'?'Conhecer':'Discover'} ↗</span></div>
+</a>

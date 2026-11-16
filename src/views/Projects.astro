@@ -1,0 +1,12 @@
+---
+import Base from '../layouts/Base.astro';import {getCollection} from 'astro:content';
+import {groupSlug} from '../lib/content';import {path,type Lang} from '../lib/i18n';
+const {lang='pt',showroom=false}=Astro.props as {lang?:Lang;showroom?:boolean};
+const all=await getCollection('projects');const projects=showroom?all.filter(p=>p.data.image):all;
+const teams=await getCollection('teams');const areas=await getCollection('areas');
+const label=showroom?(lang==='pt'?'Mostra':'Showroom'):(lang==='pt'?'Projetos':'Projects');const root=import.meta.env.BASE_URL;
+---
+<Base lang={lang} title={label}>
+<section class="subhero"><div class="wrap"><div class="eyebrow">ISEL NEWSPACE / {showroom?'SHOWROOM':'PORTFOLIO'}</div><h1>{label}</h1><p>{showroom?(lang==='pt'?'Resultados e imagens fornecidos pelas equipas.':'Team-provided results and images.'):(lang==='pt'?'Projetos e experiências que ligam áreas e equipas.':'Projects and experiments linking areas and teams.')}</p></div></section>
+<section class="section wrap"><div class="project-list">{projects.map(p=>{const img=p.data.image?.startsWith('/')?`${root}${p.data.image.slice(1)}`:p.data.image;return <a class="project-entry" href={path(lang,`projects/${p.id}/`)}>{img&&<img class="project-thumb" src={img} alt="" loading="lazy"/>}<div><span class="eyebrow">{p.data.demo?'DEMO / ':''}{p.data.status}</span><h2>{p.data.title}</h2><p>{p.data.summary}</p><p class="tagline">{p.data.areas.map(id=>areas.find(a=>a.id===id)?.data.title||id).join(' · ')}</p><p class="tagline">{p.data.teams.map(id=>teams.find(t=>groupSlug(t)===id)?.data.title||id).join(' / ')}</p><span class="text-link">{lang==='pt'?'Ver projeto':'View project'} ↗</span></div></a>})}{!projects.length&&<p>{lang==='pt'?'Ainda não há imagens fornecidas pelas equipas.':'No team-provided images yet.'}</p>}</div></section>
+</Base>

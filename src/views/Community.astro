@@ -1,0 +1,5 @@
+---
+import Base from '../layouts/Base.astro';import {getCollection} from 'astro:content';import {groupSlug} from '../lib/content';import {ui,path,type Lang} from '../lib/i18n';
+const {lang='pt'}=Astro.props as {lang?:Lang};const t=ui[lang];const teams=(await getCollection('teams')).sort((a,b)=>a.data.order-b.data.order);
+---
+<Base lang={lang} title={lang==='pt'?'Equipas':'Teams'}><section class="subhero"><div class="wrap"><div class="eyebrow">ISEL NEWSPACE / TEAMS</div><h1>{lang==='pt'?'Equipas e iniciativas':'Teams and initiatives'}</h1><p>{lang==='pt'?'Clubes, laboratórios, grupos e equipas autónomas que participam na comunidade.':'Independent clubs, labs, groups and teams taking part in the community.'}</p></div></section><section class="section wrap"><div class="grid">{teams.map(g=><a class="newsitem" href={path(lang,`teams/${groupSlug(g)}/`)}><div class="member-label">{g.data.demo?'DEMONSTRAÇÃO':'ISEL / NEWSPACE'}</div><h3>{g.data.title}</h3><p>{g.data.short}</p><span class="text-link">{t.more} ↗</span></a>)}</div></section></Base>

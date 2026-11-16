@@ -1,0 +1,5 @@
+---
+import Base from '../layouts/Base.astro';import {render} from 'astro:content';import {ui,formatDate,type Lang} from '../lib/i18n';
+const {lang='pt',entry}=Astro.props;const t=ui[lang as Lang];const {Content}=await render(entry);
+---
+<Base lang={lang} title={entry.data.title}><section class="subhero"><div class="wrap"><div class="eyebrow">{t.newsEyebrow} · {formatDate(entry.data.date,lang)}</div><h1>{entry.data.title}</h1><p>{entry.data.summary}</p></div></section><article class="article"><Content/></article></Base>

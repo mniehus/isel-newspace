@@ -1,0 +1,11 @@
+---
+import Base from '../layouts/Base.astro';import {getCollection} from 'astro:content';
+import {ui,path,type Lang} from '../lib/i18n';
+const {lang='pt'}=Astro.props as {lang?:Lang};const t=ui[lang];
+const areas=(await getCollection('areas')).sort((a,b)=>a.data.order-b.data.order);
+const projects=await getCollection('projects');
+---
+<Base lang={lang} title={lang==='pt'?'Áreas':'Areas'}>
+<section class="subhero"><div class="wrap"><div class="eyebrow">ISEL NEWSPACE / DOMAINS</div><h1>{lang==='pt'?'Áreas de atividade':'Areas of activity'}</h1><p>{lang==='pt'?'Domínios de conhecimento que conectam diferentes projetos e equipas.':'Fields of expertise connecting different projects and teams.'}</p></div></section>
+<section class="section wrap"><div class="grid">{areas.map(a=><a href={path(lang,`areas/${a.id}/`)} class="card card--group"><div class="card-placeholder"><span>NEWSPACE / {String(a.data.order).padStart(2,'0')}</span><span class="placeholder-hint">{lang==='pt'?'ÁREA':'AREA'}</span></div><div class="card-text"><h3>{lang==='en'?(a.data.titleEn||a.data.title):a.data.title}</h3><p>{lang==='en'?(a.data.summaryEn||a.data.summary):a.data.summary}</p><span class="tagline">{projects.filter(p=>p.data.areas.includes(a.id)).length} {lang==='pt'?'projetos':'projects'} ↗</span></div></a>)}</div></section>
+</Base>

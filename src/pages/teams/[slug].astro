@@ -1,0 +1,8 @@
+---
+import View from '../../views/Group.astro';
+import {getCollection} from 'astro:content';
+import {groupSlug} from '../../lib/content';
+export async function getStaticPaths(){return (await getCollection('teams')).map(x=>({params:{slug:groupSlug(x)},props:{group:x}}));}
+const {group}=Astro.props;
+---
+<View lang="pt" group={group}/>

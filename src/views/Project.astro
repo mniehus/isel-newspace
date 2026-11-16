@@ -1,0 +1,13 @@
+---
+import Base from '../layouts/Base.astro';import {getCollection,render} from 'astro:content';import {groupSlug} from '../lib/content';
+import {path,type Lang} from '../lib/i18n';
+const {lang='pt',project}=Astro.props as {lang:Lang;project:any};const {Content}=await render(project);
+const areas=await getCollection('areas'),teams=await getCollection('teams');
+---
+<Base lang={lang} title={project.data.title}>
+<section class="subhero"><div class="wrap"><div class="eyebrow">ISEL NEWSPACE / {lang==='pt'?'PROJETO':'PROJECT'}</div><h1>{project.data.title}</h1><p>{project.data.summary}</p></div></section>
+<article class="article"><span class="pill">{project.data.status}</span>{project.data.demo&&<span class="pill">{lang==='pt'?'Conteúdo demonstrativo':'Demonstration content'}</span>}<Content/>
+<h2>{lang==='pt'?'Áreas':'Areas'}</h2>{project.data.areas.map(id=>{const a=areas.find(x=>x.id===id);return <p><a href={path(lang,`areas/${id}/`)}>{a?.data.title||id} ↗</a></p>})}
+<h2>{lang==='pt'?'Equipas participantes':'Participating teams'}</h2>{project.data.teams.length?project.data.teams.map(id=>{const t=teams.find(x=>groupSlug(x)===id);return <p><a href={path(lang,`teams/${id}/`)}>{t?.data.title||id} ↗</a></p>}):<p>—</p>}
+{project.data.externalUrl&&<p><a href={project.data.externalUrl} target="_blank" rel="noopener">{lang==='pt'?'Página do projeto':'Project website'} ↗</a></p>}
+</article></Base>
